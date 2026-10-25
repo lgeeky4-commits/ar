@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050b14">
+  <title>SKYLOCK // Fictional AR Aviation Game</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="world">
+  <div class="top-accent"></div>
+  <header class="masthead">
+    <div class="brand"><span class="brand-mark">S<span class="brand-cut"></span></span><span class="brand-copy"><strong>SKYLOCK<span class="brand-dot">.</span></strong><small>AIRSPACE ARCADE // FICTIONAL</small></span></div>
+    <div class="mast-center"><span class="led" id="connectionLed"></span><span id="connectionLabel">OFFLINE DEMO</span><span class="mast-sep">/</span><span id="roleLabel">SELECT MODE</span></div>
+    <div class="mast-actions"><button id="audioToggle" type="button" title="Toggle arcade interface sounds">SOUND ON</button><button id="leaveBtn" type="button" hidden>EXIT</button></div>
+  </header>
+  <div class="disclaimer"><b>ARCADE SIMULATION</b><span>All planes, ranges, radar data, locks, and missile effects are fictional. Camera shows your surroundings; it does not detect or identify real aircraft.</span></div>
+  <div class="workspace" id="workspace" data-role="none" hidden>
+    <aside class="control-panel">
+      <div class="panel-top"><span class="kicker">COMMAND // ACCESS 01</span><b>CONTROL DESK</b></div>
+      <div class="mode-box">
+        <div class="mini-label">SESSION PAIRING</div>
+        <div class="pair-row"><strong id="pairCode">------</strong><button id="copyCode" title="Copy pairing code">COPY</button></div>
+        <p>Open this site on your other device, choose its mode, then enter this code.</p>
+      </div>
+      <div class="section-title">SIMULATION ACTIONS <span>01—04</span></div>
+      <button class="action big-action" id="scanBtn"><span class="action-index">01</span><span><b>RADAR SWEEP</b><small>Refresh fictional contacts</small></span><i>↗</i></button>
+      <button class="action big-action accent" id="lockBtn"><span class="action-index">02</span><span><b>ACQUIRE TARGET</b><small>Select a drawn aircraft</small></span><i>+</i></button>
+      <button class="action big-action danger" id="launchBtn"><span class="action-index">03</span><span><b>VIRTUAL INTERCEPT</b><small>Arcade animation only</small></span><i>✳</i></button>
+      <button class="action big-action" id="terminalBtn"><span class="action-index">04</span><span><b>PRACTICE TERMINAL</b><small>Code puzzle + visual effects</small></span><i>&gt;_</i></button>
+      <div class="section-title secondary">DISPLAY IMAGING</div>
+      <div class="mode-buttons"><button class="mode-btn active" data-filter="NORMAL">NORMAL</button><button class="mode-btn" data-filter="NIGHT">NIGHT</button><button class="mode-btn" data-filter="THERMAL">THERMAL</button><button class="mode-btn" data-filter="WIRE">WIRE</button></div>
+      <section class="pc-exclusive">
+        <div class="section-title secondary">PC-ONLY SIMULATION TOOLS</div>
+        <div class="pc-tool-grid"><button id="spawnBtn">ADD FAKE PLANE</button><button id="advanceBtn">ADVANCE SIM</button><button id="resetBtn">RESET CONTACTS</button></div>
+        <p class="pc-note">These desktop controls create and update fictional contacts only. No real aircraft are affected.</p>
+      </section>
+      <div class="panel-foot"><div><span>DEVICE LINK</span><strong id="deviceSummary">NOT PAIRED</strong></div><div><span>GAME STATE</span><strong id="gameState">READY</strong></div></div>
+    </aside>
+    <main class="visual-panel">
+      <div class="visual-header"><div><span class="kicker" id="visualKicker">TACTICAL SIMULATION / CAMERA</span><h1 id="visualTitle">SKY VIEW <span class="slash">/</span> AR</h1></div><div class="visual-header-actions"><span class="hud-badge">FAKE TARGETS ONLY</span><button id="fullscreenBtn" class="square-btn">FULL</button></div></div>
+      <div class="visual-stage" id="visualStage">
+        <section class="sky-stage" id="skyStage" aria-label="Fictional sky AR scene">
+          <div class="sky-fallback"><div class="sky-glow"></div><div class="horizon-fade"></div></div>
+          <video id="phoneCamera" muted autoplay playsinline></video>
+          <div class="imaging-layer" id="skyFilter"></div>
+          <div class="hud-overlay">
+            <div class="cam-top"><span>CAM <b id="cameraStatus">SIMULATED VIEW</b></span><span>SKY LOCK / SIM</span><span id="camFacing">REAR CAMERA</span></div>
+            <div class="center-sights"><div class="center-cross"></div><div class="cross-bracket bracket-a"></div><div class="cross-bracket bracket-b"></div><div class="cross-bracket bracket-c"></div><div class="cross-bracket bracket-d"></div></div>
+            <div class="horizon-tilt" id="horizonTilt"><div class="horizon-line"></div><div class="ladder top1">+20</div><div class="ladder top2">+10</div><div class="ladder bottom1">-10</div><div class="ladder bottom2">-20</div></div>
+            <div class="tilt-left"><b>PITCH</b><div class="tilt-track"><i></i><i></i><i></i><i></i><i></i></div><span id="pitchHud">+00°</span></div>
+            <div class="tilt-right"><b>ROLL</b><div class="tilt-track"><i></i><i></i><i></i><i></i><i></i></div><span id="rollHud">+00°</span></div>
+            <div class="sky-targets" id="skyTargets"></div>
+            <div class="camera-bottom"><div><small>DEVICE HEADING</small><strong id="headingHud">000°</strong></div><div><small>LOCKED CONTACT</small><strong id="hudTarget">ECHO-01</strong></div><div><small>SIMULATED RANGE</small><strong id="rangeHud">4.2 KM</strong></div></div>
+          </div>
+          <div class="virtual-flash" id="virtualFlash" aria-hidden="true"></div>
+          <div class="camera-controls"><button id="cameraBtn">START SKY CAMERA</button><button id="flipBtn" disabled>FLIP FRONT / REAR</button><button id="orientationBtn">ENABLE TILT</button><button id="shareCameraBtn" disabled>SHARE TO PC: OFF</button></div>
+        </section>
+        <section class="radar-stage" id="radarStage" aria-label="Fictional radar display">
+          <div class="radar-canvas" id="radarCanvas">
+            <div class="radar-ring r1"></div><div class="radar-ring r2"></div><div class="radar-ring r3"></div><div class="radar-ring r4"></div>
+            <div class="radar-gridline h"></div><div class="radar-gridline v"></div><div class="radar-sweep"></div><div class="radar-center"></div>
+            <div class="radar-targets" id="radarTargets"></div>
+            <div class="radar-axis a1">000</div><div class="radar-axis a2">090</div><div class="radar-axis a3">180</div><div class="radar-axis a4">270</div>
+          </div>
+          <div class="radar-status"><div><small>SCAN MODE</small><b id="radarMode">NORMAL</b></div><div><small>VISIBLE CONTACTS</small><b id="contactCount">04</b></div><div><small>LINK STATUS</small><b id="linkStatus">AWAITING DEVICE</b></div></div>
+        </section>
+      </div>
+      <div class="visual-footer"><span id="stageMessage">SELECT A FICTIONAL CONTACT. ENABLE CAMERA FOR SKY-OVERLAY MODE.</span><span id="stageClock">--:--:--</span></div>
+    </main>
+    <aside class="right-panel">
+      <div class="panel-top"><span class="kicker">SENSOR // ACCESS 02</span><b>DATA / TELEMETRY</b></div>
+      <div class="readout-grid"><div><small>PITCH</small><strong id="pitchData">+0°</strong></div><div><small>ROLL</small><strong id="rollData">+0°</strong></div><div><small>HEADING</small><strong id="headingData">000°</strong></div><div><small>CONTACTS</small><strong id="radarTotal">04</strong></div></div>
+      <div class="right-section-head">FICTIONAL FLIGHT CONTACTS <span id="targetCount">04</span></div>
+      <div class="contact-list" id="contactList"></div>
+      <div class="right-section-head">PHONE LINK / VIDEO</div>
+      <div class="phone-link"><div class="phone-screen"><video id="remoteCamera" autoplay playsinline muted></video><div class="phone-placeholder" id="phonePlaceholder"><b>NO CAMERA FEED</b><small>Pair phone and enable Share to PC. Video requires browser WebRTC support.</small></div><div class="feed-overlay" id="feedOverlay"></div><span class="phone-screen-label">CAMERA FEED / OPT-IN ONLY</span></div><button id="watchBtn">CONNECT PHONE VIDEO</button><small id="watchStatus">Radar telemetry works without video. On some networks WebRTC video requires a relay server.</small></div>
+      <div class="right-section-head">EVENT / ACTIVITY LOG</div>
+      <div class="activity" id="activity"><div class="activity-empty">Awaiting arcade events...</div></div>
+    </aside>
+  </div>
+  <footer class="footer"><span>SKYLOCK BUILD 01</span><span>FICTIONAL GAME / NO GPS / NO REAL AIRCRAFT DETECTION</span><span>PC + MOBILE LINK ENABLED</span></footer>
+</div>
+<div class="start-overlay" id="startOverlay"><section class="start-card"><div class="start-overline">SYSTEM INIT // SKYLOCK PROJECT</div><div class="start-symbol">S<span></span></div><h2>CHOOSE YOUR<br><em>CONTROL MODE.</em></h2><p>Two devices. One fictional airspace. Select your screen type to begin.</p><div class="role-grid"><button class="role-card" id="startMobile"><span class="role-num">01 / MOBILE</span><strong>SKY CAMERA</strong><small>Point at the sky to see fake planes, arcade lock-ons, tilt, and a mobile radar.</small><span class="role-action">START MOBILE ↗</span></button><button class="role-card" id="startPc"><span class="role-num">02 / COMPUTER</span><strong>COMMAND CONSOLE</strong><small>Large radar, video monitoring, visual modes, and fictional terminal abilities.</small><span class="role-action">START PC ↗</span></button></div><div class="start-pair"><label for="joinCode">PAIR TO AN EXISTING DEVICE (OPTIONAL)</label><input id="joinCode" placeholder="Enter 6-character room code" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false"><small>Leave blank to start a new room and get your own code.</small></div><p id="startError" class="start-error" role="alert"></p><div class="start-note">Camera and orientation sensors need permission and generally require HTTPS. Everything in this game is fictional and stays separate from real aircraft and weapon systems.</div></section></div>
+<div id="terminalOverlay" class="modal-cover" hidden><section class="terminal-modal"><div class="modal-head"><div><span class="kicker">OFFLINE ARCADE / TRAINING TERMINAL</span><h2>SIGNAL PUZZLE</h2></div><button id="terminalClose">CLOSE</button></div><div class="terminal-code"><small>ACCESS NUMBER / DISPLAYED ON YOUR CONSOLE</small><strong id="puzzleKey">----</strong></div><label for="puzzleInput">RETYPE THE FAKE ACCESS NUMBER</label><div class="terminal-form"><input id="puzzleInput" placeholder="4-digit number" maxlength="4" inputmode="numeric"><button id="puzzleEnter">UNLOCK</button></div><p id="puzzleStatus">Solve the visual puzzle to unlock four simulated effects.</p><div class="powers"><button class="power" data-tool="DECOY">DECOY CLOUD</button><button class="power" data-tool="JAMMER">SCREEN STATIC</button><button class="power" data-tool="SHIELD">SHIELD ANIMATION</button><button class="power" data-tool="PULSE">RADAR PULSE</button></div><small>All modes are visual arcade effects; no actual hacking, jamming, or weapons.</small></section></div>
+<div id="toast" class="toast" hidden role="status"></div>
+<script src="/app.js" defer></script>
+</body>
+</html>
